@@ -8,8 +8,10 @@ var router *mux.Router
 
 func init() {
 	router = mux.NewRouter()
+	setUserRoutes()
 }
 
-func getRoutes() *mux.Router {
+// GetRouter function
+func GetRouter() *mux.Router {
 	return router
 }

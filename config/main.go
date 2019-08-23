@@ -19,7 +19,7 @@ func init() {
 	if goEnv == "" {
 		goEnv = "test"
 		gp := os.Getenv("GOPATH")
-		wd = path.Join(gp, "pa-back")
+		wd = path.Join(gp, "src/pa-back")
 	}
 	configFilePath := fmt.Sprintf(wd+"/config/json/config.%s.json", goEnv)
 	file, ioError := ioutil.ReadFile(configFilePath)
