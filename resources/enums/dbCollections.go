@@ -1,17 +1,19 @@
 package enums
 
+// DBCollectionName type
 type DBCollectionName string
 
 // ToString func
 func (dbCollectionName DBCollectionName) ToString() string {
 	result := ""
 	switch dbCollectionName {
-	case DBCollectionName_Users:
+	case DBCollectionNameUsers:
 		result = "users"
 	}
 	return result
 }
 
 const (
-	DBCollectionName_Users DBCollectionName = "users"
+	// DBCollectionNameUsers users
+	DBCollectionNameUsers DBCollectionName = "users"
 )

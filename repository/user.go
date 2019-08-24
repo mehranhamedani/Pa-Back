@@ -8,39 +8,26 @@ import (
 	"pa-back/resources/enums"
 	"pa-back/resources/texts"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func getOrCreateUserByMobileNumber(mobileNumber string) (*model.User, error) {
-	var error error
-	userModel := model.User{}
-	usersCollection := db.Collection(enums.DBCollectionName_Users.ToString())
-	result := usersCollection.FindOne(context.Background(), bson.M{"mobileNumber": mobileNumber})
-	if result.Err() != nil && result.Err().Error() != texts.En_MNDIR {
-		log.Println(result.Err())
-		return &userModel, result.Err()
+// GetOrCreateUserByMobileNumber func
+func GetOrCreateUserByMobileNumber(mobileNumber string) (*model.User, error) {
+	userModel, error := GetUserByUserMobileNumber(mobileNumber)
+	if userModel.UserID.IsZero() {
+		userModel, error = CreateUser(mobileNumber)
 	}
-	error = result.Decode(&userModel)
-	if error != nil && error.Error() != texts.En_MNDIR {
-		log.Println(error)
-		return &userModel, error
-	}
-	if userModel.UserId == "" {
-		res, err := usersCollection.InsertOne(context.Background(), bson.M{"mobileNumber": mobileNumber})
-		if err != nil {
-			log.Println(err)
-			return &userModel, err
-		}
-
-	}
-	return &userModel, error
+	return userModel, error
 }
 
-func getUserByUserId(userId string) (*model.User, error) {
+// GetUserByUserID func
+func GetUserByUserID(userID primitive.ObjectID) (*model.User, error) {
 	var error error
 	userModel := model.User{}
-	usersCollection := db.Collection(enums.DBCollectionName_Users.ToString())
-	result := usersCollection.FindOne(context.Background(), bson.M{"_id": userId})
+	usersCollection := db.Collection(enums.DBCollectionNameUsers.ToString())
+	result := usersCollection.FindOne(context.Background(), bson.M{"_id": userID})
 	if result.Err() != nil && result.Err().Error() != texts.En_MNDIR {
 		log.Println(result.Err())
 		error = result.Err()
@@ -49,27 +36,41 @@ func getUserByUserId(userId string) (*model.User, error) {
 	return &userModel, error
 }
 
-func createUser(mobileNumber string) (*model.User, error) {
+// GetUserByUserMobileNumber func
+func GetUserByUserMobileNumber(mobileNumber string) (*model.User, error) {
 	var error error
 	userModel := model.User{}
-	usersCollection := db.Collection(enums.DBCollectionName_Users.ToString())
+	usersCollection := db.Collection(enums.DBCollectionNameUsers.ToString())
 	result := usersCollection.FindOne(context.Background(), bson.M{"mobileNumber": mobileNumber})
 	if result.Err() != nil && result.Err().Error() != texts.En_MNDIR {
 		log.Println(result.Err())
-		return &userModel, result.Err()
+		error = result.Err()
 	}
-	error = result.Decode(&userModel)
-	if error != nil && error.Error() != texts.En_MNDIR {
-		log.Println(error)
-		return &userModel, error
-	}
-	if userModel.UserId == "" {
-
+	decodeError := result.Decode(&userModel)
+	if decodeError != nil && decodeError.Error() != texts.En_MNDIR {
+		log.Println(decodeError)
+		error = decodeError
 	}
 	return &userModel, error
 }
 
-func getAllUsers() {
+// CreateUser func
+func CreateUser(mobileNumber string) (*model.User, error) {
+	var error error
+	userModel := &model.User{}
+	usersCollection := db.Collection(enums.DBCollectionNameUsers.ToString())
+	res, err := usersCollection.InsertOne(context.Background(), bson.M{"mobileNumber": mobileNumber})
+	if err != nil {
+		log.Println(err)
+		error = err
+	} else {
+		userModel, error = GetUserByUserID(res.InsertedID.(primitive.ObjectID))
+	}
+	return userModel, error
+}
+
+// GetAllUsers func
+func GetAllUsers() {
 	fmt.Println("")
 
 	//cur.Decode(userModel)

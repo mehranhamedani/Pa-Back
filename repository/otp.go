@@ -1,12 +1,18 @@
 package repository
 
-// import (
-// 	"go.mongodb.org/mongo-driver/bson"
-// 	"context"
-// 	"pa-back/model"
-// )
+import (
+	"context"
+	"pa-back/model"
+	"pa-back/resources/enums"
+	"time"
 
-// func getOrCreateActiveOTP(userID string) (string, error) {
-// 	otpCollection := Clinet.Database("pa").Collection("otp")
-// 	otpCollection.FindOne(context.TODO(), bson.D{  })
-// }
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+// GetOrCreateActiveOTP func
+func GetOrCreateActiveOTP(userID primitive.ObjectID) (*model.OTP, error) {
+	otpCollection := db.Collection("otps")
+	a := time.Now().UTC()
+	otpCollection.FindOne(context.Background(), bson.M{"userID": userID, "status": enums.OTPStatusEnable})
+}

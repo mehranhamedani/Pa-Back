@@ -17,7 +17,13 @@ var db *mongo.Database
 
 func init() {
 	ctx := context.TODO()
-	uri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", config.JSONConfig.DB.User, config.JSONConfig.DB.Password, config.JSONConfig.DB.Host, config.JSONConfig.DB.Port, config.JSONConfig.DB.DBName)
+	uri := fmt.Sprintf(
+		"mongodb://%s:%s@%s:%s/%s",
+		config.JSONConfig.DB.User,
+		config.JSONConfig.DB.Password,
+		config.JSONConfig.DB.Host,
+		config.JSONConfig.DB.Port,
+		config.JSONConfig.DB.DBName)
 	mongoClinet, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
 		//mongoClinet.Disconnect(ctx)
@@ -29,5 +35,5 @@ func init() {
 		//mongoClinet.Disconnect(ctx)
 		log.Fatal(err)
 	}
-	db = mongoClinet.Database("pa")
+	db = mongoClinet.Database(config.JSONConfig.DB.DBName)
 }
