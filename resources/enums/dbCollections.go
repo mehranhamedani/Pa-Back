@@ -9,11 +9,13 @@ func (dbCollectionName DBCollectionName) ToString() string {
 	switch dbCollectionName {
 	case DBCollectionNameUsers:
 		result = "users"
+	case DBCollectionNameOTPs:
+		result = "otps"
 	}
 	return result
 }
 
 const (
-	// DBCollectionNameUsers users
 	DBCollectionNameUsers DBCollectionName = "users"
+	DBCollectionNameOTPs  DBCollectionName = "otps"
 )

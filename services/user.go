@@ -1,9 +1,10 @@
 package services
 
-import (
-	"pa-back/model"
-)
+import "pa-back/repository"
 
-func registerUser(firstName string, lastName  string, email string, userName string, password string) error {
-
+// GetOTP func
+func GetOTP(mobileNumber string) (string, error) {
+	userModel, error := repository.GetOrCreateUserByMobileNumber(mobileNumber)
+	otpModel, error := repository.GetOrCreateActiveOTP(userModel.UserID)
+	return otpModel.OTP, error
 }
