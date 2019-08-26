@@ -15,7 +15,7 @@ import (
 
 // GetOrCreateUserByMobileNumber func
 func GetOrCreateUserByMobileNumber(mobileNumber string) (*model.User, error) {
-	userModel, error := GetUserByUserMobileNumber(mobileNumber)
+	userModel, error := GetUserByMobileNumber(mobileNumber)
 	if userModel.UserID.IsZero() {
 		userModel, error = CreateUser(mobileNumber)
 	}
@@ -36,8 +36,8 @@ func GetUserByUserID(userID primitive.ObjectID) (*model.User, error) {
 	return &userModel, error
 }
 
-// GetUserByUserMobileNumber func
-func GetUserByUserMobileNumber(mobileNumber string) (*model.User, error) {
+// GetUserByMobileNumber func
+func GetUserByMobileNumber(mobileNumber string) (*model.User, error) {
 	var error error
 	userModel := model.User{}
 	usersCollection := db.Collection(enums.DBCollectionNameUsers.ToString())

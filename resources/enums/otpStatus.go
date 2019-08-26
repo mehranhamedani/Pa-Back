@@ -14,6 +14,6 @@ func (otpStatus OTPStatus) ToInt() int {
 }
 
 const (
-	// OTPStatusEnable enable
 	OTPStatusEnable OTPStatus = 1
+	OTPStatusUsed   OTPStatus = 2
 )

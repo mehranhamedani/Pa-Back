@@ -22,6 +22,7 @@ func GetOrCreateActiveOTP(userID primitive.ObjectID) (*model.OTP, error) {
 	return otpModel, error
 }
 
+// GetActiveOTP func
 func GetActiveOTP(userID primitive.ObjectID) (*model.OTP, error) {
 	var error error
 	otpModel := model.OTP{}
@@ -37,6 +38,7 @@ func GetActiveOTP(userID primitive.ObjectID) (*model.OTP, error) {
 	return &otpModel, error
 }
 
+// CreateOTP func
 func CreateOTP(userID primitive.ObjectID) (*model.OTP, error) {
 	var error error
 	otpModel := &model.OTP{}
@@ -50,6 +52,7 @@ func CreateOTP(userID primitive.ObjectID) (*model.OTP, error) {
 	return otpModel, error
 }
 
+// GetOTPByID func
 func GetOTPByID(otpID primitive.ObjectID) (*model.OTP, error) {
 	var error error
 	otpModel := model.OTP{}
@@ -60,4 +63,24 @@ func GetOTPByID(otpID primitive.ObjectID) (*model.OTP, error) {
 	}
 	error = result.Decode(&otpModel)
 	return &otpModel, error
+}
+
+// GetOTPByUserIDAndOTP func
+func GetOTPByUserIDAndOTP(userID primitive.ObjectID, otp string) (*model.OTP, error) {
+	var error error
+	otpModel := model.OTP{}
+	otpCollection := db.Collection(enums.DBCollectionNameOTPs.ToString())
+	result := otpCollection.FindOne(context.Background(), bson.M{"userID": userID, "otp": otp, "status": enums.OTPStatusEnable})
+	if result.Err() != nil && result.Err().Error() != texts.En_MNDIR {
+		error = result.Err()
+	}
+	error = result.Decode(&otpModel)
+	return &otpModel, error
+}
+
+// UseOTP func
+func UseOTP(otpID primitive.ObjectID) error {
+	otpCollection := db.Collection(enums.DBCollectionNameOTPs.ToString())
+	_, error := otpCollection.UpdateOne(context.Background(), bson.M{"_id": otpID}, bson.M{"$set": bson.M{"status": enums.OTPStatusUsed}})
+	return error
 }
